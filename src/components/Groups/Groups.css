@@ -1,0 +1,39 @@
+.groups{
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+  grid-row-gap: 20px;
+  border: 1px solid black;
+  background-color: LightGray  ;
+}
+
+.group{
+  display: flex;
+  flex-direction: column;
+
+  justify-content: space-between;
+}
+
+.\32{
+  background-color: green;
+  border: 2px solid black;
+}
+
+.\31{
+  background-color: blue;
+  border: 2px solid black;
+}
+
+.none{
+  border: 2px solid LightGray;
+  padding-right: 8px;
+}
+
+.team{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.place{
+  color: white;
+}
