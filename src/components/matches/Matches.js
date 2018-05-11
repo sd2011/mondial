@@ -4,19 +4,9 @@ import _ from 'lodash'
 import Match from "./Match";
 import './matches.css';
 class Matches extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-        check: false,
-        winners: {
-          1: {49: ["?", "?"], 50: ["?", "?"], 53: ["?", "?"], 54: ["?", "?"]},
-          2: {57: ["?", "?"], 58: ["?", "?"]},
-          3: {61: ["?", "?"]},
-          4: {64: ["?", "?"], 63: ["?", "?"]},
-          5: {62: ["?", "?"]},
-          6: {59: ["?", "?"], 60: ["?", "?"]},
-          7: {51: ["?", "?"], 52: ["?", "?"], 55: ["?", "?"], 56: ["?", "?"]}
-      },
       color: {
         1: {},
         2: {},
@@ -26,45 +16,73 @@ class Matches extends Component {
         6: {},
         7: {}
       },
-      top3:{}
+      top3:{},
+      ok: false
     };
+   this.start = this.start.bind(this);
     this.handler = this.handler.bind(this);
   }
 
+  componentDidUpdate(prevProps, prevState){
+    if(!this.state.winners &&  this.props.winners !== "") {
+      this.setState({winners: this.props.winners });
+    }
+    if(this.state.ok === true){
+      if(this.state.ok === prevState.ok){this.props.check(this.state.top3, this.state.winners)}
+  }
+  console.log(this.props.groupsWinners);
+  console.log(prevProps.groupsWinners);
+  if(this.props.groupsWinners !== prevProps.groupsWinners ){this.winnersToState();}
+  }
+
+  start(){
+    return({
+      1: {49: ["?", "?"], 50: ["?", "?"], 53: ["?", "?"], 54: ["?", "?"]},
+      2: {57: ["?", "?"], 58: ["?", "?"]},
+      3: {61: ["?", "?"]},
+      4: {64: ["?", "?"], 63: ["?", "?"]},
+      5: {62: ["?", "?"]},
+      6: {59: ["?", "?"], 60: ["?", "?"]},
+      7: {51: ["?", "?"], 52: ["?", "?"], 55: ["?", "?"], 56: ["?", "?"]}
+  });
+  }
+
+
   winnersToState() {
     const {groupsWinners} = this.props;
-    if(!this.state.check && groupsWinners !== ""){
-      this.setState(prevstate => ({
-        check: true,
-        winners: {
-          ...prevstate.winners,
-          1: {
-            49: [groupsWinners['group A'][1], groupsWinners['group B'][2]],
-            50: [groupsWinners['group C'][1], groupsWinners['group D'][2]],
-            53: [groupsWinners['group E'][1], groupsWinners['group F'][2]],
-            54: [groupsWinners['group G'][1], groupsWinners['group H'][2]],
-          },
-          7:{
-            51: [groupsWinners['group B'][1], groupsWinners['group A'][2]],
-            52: [groupsWinners['group D'][1], groupsWinners['group C'][2]],
-            55: [groupsWinners['group F'][1], groupsWinners['group E'][2]],
-            56: [groupsWinners['group H'][1], groupsWinners['group G'][2]],
-          }
-        }
-      }))
+    console.log(groupsWinners);
+    const start = this.start();
+    const winners = {
+    ...start,
+    1: {
+      49: [groupsWinners['group A'][1], groupsWinners['group B'][2]],
+      50: [groupsWinners['group C'][1], groupsWinners['group D'][2]],
+      53: [groupsWinners['group E'][1], groupsWinners['group F'][2]],
+      54: [groupsWinners['group G'][1], groupsWinners['group H'][2]],
+    },
+    7:{
+      51: [groupsWinners['group B'][1], groupsWinners['group A'][2]],
+      52: [groupsWinners['group D'][1], groupsWinners['group C'][2]],
+      55: [groupsWinners['group F'][1], groupsWinners['group E'][2]],
+      56: [groupsWinners['group H'][1], groupsWinners['group G'][2]],
+    }};
+
+      this.setState({
+          winners
+        })
     }
-  }
+
+
+
 
   settingWinners(winner, column, match, place, i, loser, matchNumber) {
     const color = this.state.color;
     const winners = this.state.winners;
-    console.log(matchNumber);
+    color[column][match] = "";
     if (matchNumber < 63){
-      color[column][match]="";
       color[i][matchNumber] = {
-      ... color[i],
-      [winner]: "blue",
-      [loser]: ""
+        [winner]: "blue",
+        [loser]: ""
     };
   }
   else if (matchNumber === "64"){
@@ -80,7 +98,8 @@ class Matches extends Component {
     top3[2] = loser;
     return(this.setState({
       top3,
-      color
+      color,
+      ok: true
     }));
   }
     else {
@@ -93,18 +112,22 @@ class Matches extends Component {
       top3[3] = winner;
       return(this.setState({
         top3,
-        color
+        color,
+        ok: true
      }));
    }
-
     winners[column][match][place] = winner;
     if(column === 4){winners[column][match-1][place] = loser;}
     if(matchNumber < 61){
+      let anotherLoser = ""
       _.forEach(winners, (row, index) => {
         _.forEach(row, (matches, number) =>{
           if (number > matchNumber){
-            if(winners[index][number][0] === loser){winners[index][number][0] = "?";}
-            if(winners[index][number][1] === loser){winners[index][number][1] = "?";}
+            const first = winners[index][number][0];
+            const second = winners[index][number][1];
+            if(first === loser || first === anotherLoser ){winners[index][number][0] = "?";}
+            if(second === loser || second === anotherLoser){winners[index][number][1] = "?";}
+
           }
         });
       });
@@ -149,6 +172,8 @@ class Matches extends Component {
     }
   }
 
+
+
   renderMatches(column,i){
       const columns = _.map(column, (teams, number) =>
     <div key={number.toString()} id={"match"+number.toString()}>
@@ -158,7 +183,11 @@ class Matches extends Component {
       return(<div className="column">{columns}</div>);
   }
 
+
+
   renderMatch(teams, number, index, i){
+    const {ok} = this.state;
+    if(ok === true && (teams[0] === "?" || teams[1] === "?") ) {this.setState({ok: false});}
     return (
         <Match
          number={number}
@@ -175,23 +204,23 @@ class Matches extends Component {
   }
 
   render(){
-    console.log(this.state.top3);
-    const {winners} = this.state;
-    const {groupsWinners} = this.props;
-    console.log(groupsWinners);
-    groupsWinners && this.winnersToState();
-    const matches = _.map(winners, (column, i) =>
+    const { winners } = this.state;
+    const show = winners ? winners : this.start();
+    const matches = _.map(show, (column, i) =>
      <div key={i} id={"column"+i}>
      {this.renderMatches(column,i)}
      </div>
    );
-    return(<div className="matches">{matches}</div>);
+    return(
+        <div className="matches">{matches}</div>
+    );
   }
 }
 
 function mapStateToProps(state){
   return{
-    groupsWinners: state.user.groupsWinners
+    groupsWinners: state.user.groupsWinners,
+    winners: state.user.winners
   }
 }
 

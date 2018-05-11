@@ -1,10 +1,7 @@
-import React, { Component } from 'react';
+import React  from 'react';
 import './matches.css';
-class Match extends Component{
-
-
-  render(){
-    const {number, date, time, teamA, teamB, index, handler, color,i} = this.props;
+const Match = props => {
+    const {number, date, time, teamA, teamB, index, handler, color,i} = props;
 
     return(
       <div className="match">
@@ -19,6 +16,5 @@ class Match extends Component{
       </div>
     );
   }
-}
 
 export default Match;

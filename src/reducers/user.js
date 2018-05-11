@@ -1,4 +1,4 @@
-import { FETCH_USER, INSERT_GROUPS_WINNERS } from '../actions/index';
+import { FETCH_USER, INSERT_GROUPS_WINNERS, INSERT_WINNERS } from '../actions/index';
 
 
 export default function(state = {}, action) {
@@ -6,15 +6,22 @@ export default function(state = {}, action) {
     case FETCH_USER:
       return {
         ...state,
-        "email": action.payload.email,
-        "id": action.payload.id,
-        "office": action.payload.office,
-        "groupsWinners": action.payload.groupsWinners
+        "email": action.payload.data.email,
+        "id": action.payload.data.id,
+        "office": action.payload.data.office,
+        "groupsWinners": action.payload.data.groupsWinners,
+        "top3": action.payload.data.top3,
+        "winners": action.payload.data.winners
     };
     case INSERT_GROUPS_WINNERS:
       return{
         ...state,
-        "groupsWinners": action.payload
+        'groupsWinners': action.payload.data
+      };
+      case INSERT_WINNERS:
+      return {...state,
+        "top3": action.payload.data.top3,
+        "winners": action.payload.data.winners
       };
     default:
     return state;

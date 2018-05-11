@@ -1,10 +1,14 @@
 import React, { Component} from 'react';
 import { reduxForm, Field } from  'redux-form';
 import { connect } from 'react-redux';
-import { fetchUser } from '../actions/index';
+import { bindActionCreators } from 'redux';
+import { fetchCurrentUser } from '../actions/index';
 
 class Enter extends Component {
 
+  componentDidUpdate(prevProps, prevState){
+    this.props.email && this.props.history.push(`/index/${this.props.email}`);
+  }
 
 renderComponent(field){
   return(
@@ -34,9 +38,7 @@ return(
 }
 
 onSubmit(values){
-  this.props.fetchUser(values)
-  const email = this.props.user.email;
-  this.props.history.push('/index/${email}');
+  this.props.fetchCurrentUser(values);
 }
 
   render(){
@@ -80,10 +82,15 @@ function validate(values){
 
 function mapStateToProps(state){
   return{
-    user: state.user
+    email: state.currentUser.email
   };
 }
+
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({fetchCurrentUser}, dispatch);
+}
+
 export default reduxForm({
   validate,
   form:"enterForm"
-})(connect(mapStateToProps, { fetchUser })(Enter));
+})(connect(mapStateToProps, mapDispatchToProps)(Enter));

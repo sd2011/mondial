@@ -1,9 +1,10 @@
 import React , {Component} from 'react';
 import {connect} from "react-redux";
+import { bindActionCreators } from 'redux';
 import _ from "lodash";
 import "./Groups.css";
 import Team from "./teams";
-import { insertGroupsWinners } from "../../actions/index";
+import { insertGroupsWinners, insertWinners } from "../../actions/index";
 
 class Groups extends Component{
   constructor(){
@@ -45,18 +46,20 @@ handler(groups,teams) {
       if(count[1] === 1 && count[2] === 1){groupsWinners[group] = teamsWinners;}
       });
     if(Object.keys(groupsWinners).length === 8){
-      return(insertGroupsWinners({groupsWinners, 'email': this.props.user['email']}));
+      return(this.props.insertGroupsWinners({groupsWinners, 'email': this.props.user['email']}));
   }
     else {
-      return(this.error());
+      return(this.error(1));
     }
   }
 
-  error(){
-  this.setState({error:'please choose only one first place and one second place for each group!'});
+  error(number){
+  number === 1 && this.setState({error:'please choose only one first place and one second place for each group!'});
+  number === 2 && this.setState({error:'please make sure you have completed all of your betting!'});
 }
 
   render(){
+    const {top3, winners} = this.props;
     const renderGroups = _.map(this.state.groups, (group, i) => {
       return(
         <div key={i}>
@@ -80,7 +83,7 @@ handler(groups,teams) {
         <div>
           <div>
             <button onClick={() => this.check()}>submit groups</button>
-            <button>submit betting</button>
+            <button onClick={() => Object.keys(top3).length === 3 ? this.props.insertWinners({top3, winners,'email': this.props.user['email']}) : this.error(2) }>submit betting</button>
           </div>
           <div className="error">{this.state.error}</div>
         </div>
@@ -95,4 +98,11 @@ function mapStateToProps(state) {
 };
 }
 
-export default connect( mapStateToProps , {insertGroupsWinners})(Groups);
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({
+    insertGroupsWinners,
+    insertWinners
+  }, dispatch);
+}
+
+export default connect( mapStateToProps , mapDispatchToProps)(Groups);
