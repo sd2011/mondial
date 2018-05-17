@@ -17,23 +17,40 @@ class Matches extends Component {
         7: {}
       },
       top3:{},
-      ok: false
+      ok: false,
+      check: false
     };
    this.start = this.start.bind(this);
     this.handler = this.handler.bind(this);
   }
 
+  shouldComponentUpdate(nextProps,nextState){
+    if (this.state.check === true){
+    if(!nextProps.update){
+    return false;
+  }
+  }
+  return true;
+}
+
   componentDidUpdate(prevProps, prevState){
-    if(!this.state.winners &&  this.props.winners !== "") {
-      this.setState({winners: this.props.winners });
+    if(this.state.ok === true || this.props.dor ){
+      if(this.state.ok === prevState.ok || this.props.dor){this.props.check(this.state.top3, this.state.winners, this.state.color)}
     }
-    if(this.state.ok === true){
-      if(this.state.ok === prevState.ok){this.props.check(this.state.top3, this.state.winners)}
+    if(this.props.top3 !== prevProps.top3 && this.props.top3 !== ""){console.log(this.state.winners);this.setState({ok:true})}
+    if(this.props.groupsWinners !== prevProps.groupsWinners && this.props.groupsWinners !== "" ){this.winnersToState();}
+    if(!this.state.winners &&  this.props.winners !== "") {
+      console.log(this.props.top3);
+      this.setState({
+      winners: this.props.winners,
+      color: this.props.color,
+      top3: this.props.top3,
+      ok:true,
+      check: true
+    });
+    }
   }
-  console.log(this.props.groupsWinners);
-  console.log(prevProps.groupsWinners);
-  if(this.props.groupsWinners !== prevProps.groupsWinners ){this.winnersToState();}
-  }
+
 
   start(){
     return({
@@ -50,21 +67,20 @@ class Matches extends Component {
 
   winnersToState() {
     const {groupsWinners} = this.props;
-    console.log(groupsWinners);
     const start = this.start();
     const winners = {
     ...start,
     1: {
-      49: [groupsWinners['group A'][1], groupsWinners['group B'][2]],
-      50: [groupsWinners['group C'][1], groupsWinners['group D'][2]],
-      53: [groupsWinners['group E'][1], groupsWinners['group F'][2]],
-      54: [groupsWinners['group G'][1], groupsWinners['group H'][2]],
+      49: [groupsWinners['Group A'][1], groupsWinners['Group B'][2]],
+      50: [groupsWinners['Group C'][1], groupsWinners['Group D'][2]],
+      53: [groupsWinners['Group E'][1], groupsWinners['Group F'][2]],
+      54: [groupsWinners['Group G'][1], groupsWinners['Group H'][2]],
     },
     7:{
-      51: [groupsWinners['group B'][1], groupsWinners['group A'][2]],
-      52: [groupsWinners['group D'][1], groupsWinners['group C'][2]],
-      55: [groupsWinners['group F'][1], groupsWinners['group E'][2]],
-      56: [groupsWinners['group H'][1], groupsWinners['group G'][2]],
+      51: [groupsWinners['Group B'][1], groupsWinners['Group A'][2]],
+      52: [groupsWinners['Group D'][1], groupsWinners['Group C'][2]],
+      55: [groupsWinners['Group F'][1], groupsWinners['Group E'][2]],
+      56: [groupsWinners['Group H'][1], groupsWinners['Group G'][2]],
     }};
 
       this.setState({
@@ -78,8 +94,8 @@ class Matches extends Component {
   settingWinners(winner, column, match, place, i, loser, matchNumber) {
     const color = this.state.color;
     const winners = this.state.winners;
-    color[column][match] = "";
     if (matchNumber < 63){
+      if(color[column][match]){color[column][match][loser] = "" ;}
       color[i][matchNumber] = {
         [winner]: "blue",
         [loser]: ""
@@ -94,8 +110,8 @@ class Matches extends Component {
         [winner]: "gold",
         [loser]: loserColor
       }
-    top3[1] = winner;
-    top3[2] = loser;
+    top3['1'] = winner;
+    top3['2'] = loser;
     return(this.setState({
       top3,
       color,
@@ -109,7 +125,7 @@ class Matches extends Component {
         [winner]: "bronze",
         [loser]: ""
       }
-      top3[3] = winner;
+      top3['3'] = winner;
       return(this.setState({
         top3,
         color,
@@ -119,14 +135,13 @@ class Matches extends Component {
     winners[column][match][place] = winner;
     if(column === 4){winners[column][match-1][place] = loser;}
     if(matchNumber < 61){
-      let anotherLoser = ""
       _.forEach(winners, (row, index) => {
         _.forEach(row, (matches, number) =>{
           if (number > matchNumber){
             const first = winners[index][number][0];
             const second = winners[index][number][1];
-            if(first === loser || first === anotherLoser ){winners[index][number][0] = "?";}
-            if(second === loser || second === anotherLoser){winners[index][number][1] = "?";}
+            if(first === loser ){winners[index][number][0] = "?";}
+            if(second === loser ){winners[index][number][1] = "?";}
 
           }
         });
@@ -134,7 +149,8 @@ class Matches extends Component {
    }
       this.setState({
         winners,
-        color
+        color,
+        ok: true
       });
   }
 
@@ -165,7 +181,6 @@ class Matches extends Component {
         case (number > 61 && number < 63):
         this.settingWinners(winner, 4 , 64 , 1, i, loser, number);
         break;
-
         default:
         return(this.settingWinners(winner, 0 , 0 , 0, i, loser, number));
       }
@@ -220,7 +235,11 @@ class Matches extends Component {
 function mapStateToProps(state){
   return{
     groupsWinners: state.user.groupsWinners,
-    winners: state.user.winners
+    winners: state.user.winners,
+    color: state.user.color,
+    email: state.user.email,
+    top3: state.top3,
+    currentUser: state.currentUser
   }
 }
 

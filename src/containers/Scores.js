@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import Nav from '../components/Nav/Nav';
 import { fetchUsers } from '../actions/index';
+import "./container.css";
 
 
 class Scores extends Component {
@@ -12,7 +13,6 @@ class Scores extends Component {
 
   componentDidMount(){
     this.props.fetchUsers();
-    console.log('yes');
 }
 
 
@@ -20,12 +20,12 @@ class Scores extends Component {
     const { users } = this.props;
     if(!users){return(<div>...loading</div>);}
     const scores = _.map(users, (user) => {
-      return(
-        <div key={user._id}>
+      return(<div>{user.email !== 'dor@veriests.com' && (
+        <div className="user" key={user._id}>
           <Link to={`/index/${user.email}`}> {user.email}</Link>
-          <div>0</div>
+          <div>{user.score}</div>
         </div>
-      );
+      )}</div>)
     });
 
     return (
@@ -33,9 +33,9 @@ class Scores extends Component {
         <header>
           <Nav email={this.props.email ? this.props.email : "" }/>
         </header>
-        <div>
-          <div>scores</div>
-          <div>{scores}</div>
+        <div className="scores">
+          <div className="scoresTitle">scores</div>
+          <div className="usersScores">{scores}</div>
         </div>
       </div>
     );
@@ -44,7 +44,7 @@ class Scores extends Component {
 
 function mapStateToProps(state){
   return{
-    users: state.users,
+    users: state.users.users,
     email:state.currentUser.email
   };
 }

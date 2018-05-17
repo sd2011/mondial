@@ -9,9 +9,24 @@ class Team extends Component {
   }
 
  render(){
-   const {teams, groups, group} = this.props
+   const {teams, groups, group, winnerGroups, clickin} = this.props
 
   const allTeams = _.map(teams,(place,team) => {
+    if (winnerGroups){
+      if (winnerGroups[group]['1'] === team && !clickin){
+        if(groups[group][team] !== '1'){
+          groups[group][team] = '1';
+          this.props.setState(groups);
+        }
+      }
+      if (winnerGroups[group]['2'] === team && !clickin){
+        if(groups[group][team] !== '2'){
+          groups[group][team] = '2';
+          this.props.setState(groups);
+        }
+      }
+    }
+
   return(
     <div onClick={() => this.changeColor(team,group,groups,place)} key={team} className={"team " + this.placing(place)}>
       <div>{team}</div>
