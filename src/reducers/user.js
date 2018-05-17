@@ -11,7 +11,9 @@ export default function(state = {}, action) {
         "office": action.payload.data.office,
         "groupsWinners": action.payload.data.groupsWinners,
         "top3": action.payload.data.top3,
-        "winners": action.payload.data.winners
+        "winners": action.payload.data.winners,
+        "color": action.payload.data.color,
+        "score": action.payload.data.score
     };
     case INSERT_GROUPS_WINNERS:
       return{
@@ -19,9 +21,11 @@ export default function(state = {}, action) {
         'groupsWinners': action.payload.data
       };
       case INSERT_WINNERS:
+
       return {...state,
         "top3": action.payload.data.top3,
-        "winners": action.payload.data.winners
+        "winners": action.payload.data.winners,
+        "color": action.payload.data.color,
       };
     default:
     return state;

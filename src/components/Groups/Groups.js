@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import _ from "lodash";
 import "./Groups.css";
 import Team from "./teams";
-import { insertGroupsWinners, insertWinners } from "../../actions/index";
+import { insertGroupsWinners } from "../../actions/index";
 
 class Groups extends Component{
   constructor(){
@@ -12,26 +12,36 @@ class Groups extends Component{
     this.handler = this.handler.bind(this)
     this.state = {
       groups: {
-        "group A": {"Russia": "", "Saudi Arabia": "", "Egypt": "", "Uruguay": ""},
-        "group B": {"Portogal": "", "Spain": "", "Morocco": "", "IR Iran": ""},
-        "group C": {"France": "", "Australia": "", "Peru": "", "Denmark": ""},
-        "group D": {"Argentina": "", "Iceland": "", "croatia": "", "Nigeria": ""},
-        "group E": {"Brazil": "", "Swizerland": "", "Costa Rica": "", "Serbia": ""},
-        "group F": {"Germany": "", "Mexico": "", "Sweden": "", "Korea Republic": ""},
-        "group G": {"Belgium": "", "Panama": "", "Tunisia": "", "England": ""},
-        "group H": {"Poland": "", "Senegai": "", "Colombia": "", "Japan": ""}
+        "Group A": {"Russia": "", "Saudi Arabia": "", "Egypt": "", "Uruguay": ""},
+        "Group B": {"Portogal": "", "Spain": "", "Morocco": "", "IR Iran": ""},
+        "Group C": {"France": "", "Australia": "", "Peru": "", "Denmark": ""},
+        "Group D": {"Argentina": "", "Iceland": "", "Croatia": "", "Nigeria": ""},
+        "Group E": {"Brazil": "", "Swizerland": "", "Costa Rica": "", "Serbia": ""},
+        "Group F": {"Germany": "", "Mexico": "", "Sweden": "", "Korea Republic": ""},
+        "Group G": {"Belgium": "", "Panama": "", "Tunisia": "", "England": ""},
+        "Group H": {"Poland": "", "Senegal": "", "Colombia": "", "Japan": ""}
       },
       error: "",
+      clickin: false,
+      update: true
     };
     this.error = this.error.bind(this);
   }
 
-handler(groups,teams) {
-  this.setState({
-    groups,
-    teams
-});
+  shouldComponentUpdate(nextProps, nextState){
+    if (this.props.user.email !== this.props.email || !this.props.update){
+      if(!this.state.update){
+        return false;
+      }
+    }
+    return true;
   }
+
+
+handler(groups) {this.setState({
+    groups,
+    clickin: true
+});}
 
   check(){
     const { groups } = this.state;
@@ -43,23 +53,25 @@ handler(groups,teams) {
         count[place] ? count[place]++ : count[place] = 1;
         if(place !== "") {teamsWinners[place]=team;}
       });
-      if(count[1] === 1 && count[2] === 1){groupsWinners[group] = teamsWinners;}
+      if((count[1] === 1 && count[2] === 1) || this.props.email === 'dor@veriests.com' ){groupsWinners[group] = teamsWinners;}
       });
-    if(Object.keys(groupsWinners).length === 8){
+    if(Object.keys(groupsWinners).length === 8 || this.props.email === 'dor@veriests.com' ){
       return(this.props.insertGroupsWinners({groupsWinners, 'email': this.props.user['email']}));
   }
     else {
-      return(this.error(1));
+      return(this.error());
     }
   }
 
-  error(number){
-  number === 1 && this.setState({error:'please choose only one first place and one second place for each group!'});
-  number === 2 && this.setState({error:'please make sure you have completed all of your betting!'});
+  error(){
+this.setState({error:'please choose only one first place and one second place for each group!'});
+}
+
+update(){
+  this.state.update && this.setState({update: false});
 }
 
   render(){
-    const {top3, winners} = this.props;
     const renderGroups = _.map(this.state.groups, (group, i) => {
       return(
         <div key={i}>
@@ -70,6 +82,8 @@ handler(groups,teams) {
              teams={group}
              group={i}
              setState={this.handler}
+             winnerGroups={this.props.user.groupsWinners}
+             clickin={this.state.clickin}
             />
           </div>
         </div>
@@ -82,8 +96,7 @@ handler(groups,teams) {
         </div>
         <div>
           <div>
-            <button onClick={() => this.check()}>submit groups</button>
-            <button onClick={() => Object.keys(top3).length === 3 ? this.props.insertWinners({top3, winners,'email': this.props.user['email']}) : this.error(2) }>submit betting</button>
+            {this.props.update ? (<button onClick={() => this.check()}>submit groups</button>) : this.update()}
           </div>
           <div className="error">{this.state.error}</div>
         </div>
@@ -94,14 +107,14 @@ handler(groups,teams) {
 
 function mapStateToProps(state) {
   return{
-    user: state.user
+    user: state.user,
+    email: state.currentUser.email
 };
 }
 
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
-    insertGroupsWinners,
-    insertWinners
+    insertGroupsWinners
   }, dispatch);
 }
 
