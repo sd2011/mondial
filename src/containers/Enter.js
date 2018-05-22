@@ -3,6 +3,7 @@ import { reduxForm, Field } from  'redux-form';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { fetchCurrentUser } from '../actions/index';
+import './css/enter.css';
 
 class Enter extends Component {
 
@@ -47,37 +48,40 @@ onSubmit(values){
     const { handleSubmit } = this.props;
 
     return(
-      <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-      <Field
-        label="Email"
-        name="email"
-        type="email"
-        component = {this.renderComponent}
-      />
-      <Field
-      label="Password"
-      name="password"
-      type="password"
-      component={this.renderComponent}
-      />
-      <Field
-      label="Confirm Password"
-      name="confirmPassword"
-      type="password"
-      component={this.renderComponent}
-      />
-      <div>
-          <label>office</label>
-          <div>
-            <select  onChange={this.change.bind(this)}>
-              <option value="israel">israel</option>
-              <option value="serbia">serbia</option>
-            </select>
-          </div>
+      <div className='enter'>
+        <div className='box'>
+          <div className='signIn'>sign in</div>
+          <form className='form' onSubmit={handleSubmit(this.onSubmit.bind(this))}>
+            <Field
+              label="Email: "
+              name="email"
+              type="email"
+              component = {this.renderComponent}
+            />
+            <Field
+            label="Password: "
+            name="password"
+            type="password"
+            component={this.renderComponent}
+            />
+            <Field
+            label="Confirm Password: "
+            name="confirmPassword"
+            type="password"
+            component={this.renderComponent}
+            />
+            <div>
+                  <label>Office: </label>
+                  <select className="office" onChange={this.change.bind(this)}>
+                    <option value="israel">Israel</option>
+                    <option value="serbia">Serbia</option>
+                  </select>
+              </div>
+            <button type="submit" >enter</button>
+            {this.state.error && (<div>{this.state.error}</div>)}
+          </form>
         </div>
-      <button type="submit" >enter</button>
-      {this.state.error && (<div>{this.state.error}</div>)}
-      </form>
+      </div>
     );
   }
 }

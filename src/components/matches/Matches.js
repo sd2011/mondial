@@ -5,6 +5,7 @@ import Match from "./Match";
 import './matches.css';
 class Matches extends Component {
   constructor(props) {
+    debugger;
     super(props);
     this.state = {
       color: {
@@ -17,7 +18,7 @@ class Matches extends Component {
         7: {}
       },
       top3:{},
-      ok: false,
+      ok: true,
       check: false
     };
    this.start = this.start.bind(this);
@@ -26,10 +27,11 @@ class Matches extends Component {
 
   shouldComponentUpdate(nextProps,nextState){
     if (this.state.check === true){
-    if(!nextProps.update){
-    return false;
+      if(!nextProps.update){
+        return false;
+     }
   }
-  }
+
   return true;
 }
 
@@ -37,18 +39,17 @@ class Matches extends Component {
     if(this.state.ok === true || this.props.dor ){
       if(this.state.ok === prevState.ok || this.props.dor){this.props.check(this.state.top3, this.state.winners, this.state.color)}
     }
-    if(this.props.top3 !== prevProps.top3 && this.props.top3 !== ""){console.log(this.state.winners);this.setState({ok:true})}
-    if(this.props.groupsWinners !== prevProps.groupsWinners && this.props.groupsWinners !== "" ){this.winnersToState();}
+    if (!this.state.ok && !this.props.dor && prevState.winners){this.props.check(false);}
+    if(this.props.groupsWinners !== prevProps.groupsWinners && this.props.groupsWinners !== "" && !this.state.winners ){this.winnersToState();}
     if(!this.state.winners &&  this.props.winners !== "") {
-      console.log(this.props.top3);
       this.setState({
       winners: this.props.winners,
       color: this.props.color,
       top3: this.props.top3,
-      ok:true,
       check: true
     });
     }
+
   }
 
 
@@ -219,6 +220,7 @@ class Matches extends Component {
   }
 
   render(){
+    if(!this.props.color) {return(<div> ...loading </div>);}
     const { winners } = this.state;
     const show = winners ? winners : this.start();
     const matches = _.map(show, (column, i) =>
@@ -238,7 +240,7 @@ function mapStateToProps(state){
     winners: state.user.winners,
     color: state.user.color,
     email: state.user.email,
-    top3: state.top3,
+    top3: state.user.top3,
     currentUser: state.currentUser
   }
 }

@@ -12,7 +12,7 @@ class Index extends Component{
   constructor() {
     super();
     this.state = {
-      top3:{},
+
       winners:{},
       update: true,
     }
@@ -25,14 +25,17 @@ class Index extends Component{
   }
 
   componentDidUpdate(prevProps, prevState){
-    this.props.user.email != this.props.match.params.email && this.props.history.push('/')
+    this.props.user.email !== this.props.match.params.email && this.props.history.push('/')
     if ((this.props.user.email !== this.props.currentUser.email || moment('2018-06-13').isBefore()) && this.state.update){
       this.setState({update: false});
     }
+    const {top3, winners,color } = this.props.user;
+    if(top3 !== prevProps.user.top3 && top3 !== "" ){this.setState({top3 , winners ,color});}
   }
 
 
   check(top3, winners,color){
+    if(!top3 && this.state.top3 !== ""){return this.setState({top3: "", winners: {},color: {} });}
     if(this.props.currentUser.email === 'dor@veriests.com' && this.state.dor ){
       this.props.insertWinners({top3,winners,color,'email': this.props.user['email']});
       return this.setState({dor: false, submited: "betting has been submitted"});
@@ -49,7 +52,7 @@ class Index extends Component{
     if(this.props.currentUser.email ==='dor@veriests.com' )
     {return this.setState({dor: true})}
   const {top3, winners,color } = this.state;
-    if(Object.keys(top3).length === 3) {
+    if(top3 && Object.keys(top3).length === 3) {
       this.props.insertWinners({top3,winners,color,'email': this.props.user['email']});
       this.setState({submited: "betting has been submitted"});
     }

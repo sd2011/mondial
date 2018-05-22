@@ -1,10 +1,20 @@
+
+
 .scores{
   margin: 20px;
   border: 2px solid purple;
+  background-color: lightgray;
 }
 
 .scoresTitle{
+background-color: purple;
+color: white;
+display: flex;
+justify-content: space-between;
+}
 
+.scoresTitle h4{
+  margin: auto;
 }
 
 .usersScores{
