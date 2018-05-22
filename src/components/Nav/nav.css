@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .nav{
   display: flex;
   justify-content: flex-start;
@@ -12,3 +13,19 @@
 .nav a {
   color: white;
 }
+=======
+.nav{
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row;
+  color: white;
+  background-color: purple;
+  border: 2px solid black;
+  height: 30px;
+}
+
+
+.nav a {
+  color: white;
+}
+>>>>>>> b79665d0f9f017614cd7c8f785c1ff2874a74278
