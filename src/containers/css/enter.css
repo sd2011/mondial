@@ -4,9 +4,11 @@
   height: 75%;
   width: 34%;
   margin: auto;
+  margin-top: 51px;
+  margin-right: 360px;
   justify-content: space-around;
   align-items: flex-end;
-  
+
 }
 
 .enter{
@@ -35,4 +37,8 @@
 .office {
   width: 170px;
   height: 22px;
+}
+
+button {
+  margin-right: 60px;
 }
