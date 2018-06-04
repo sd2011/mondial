@@ -1,49 +1,40 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import Nav from '../components/Nav/Nav';
-import { fetchUsers } from '../actions/index';
 import "./css/container.css";
 
 
 class Scores extends Component {
   constructor(props){
-    debugger;
     super(props);
     this.state = {
+      value: 'all offices'
     }
     this.change = this.change.bind(this);
   }
 
 
-  componentDidMount(){
-    this.props.fetchUsers();
-}
-
-
-  change(value){
+  change(){
     const users = _.orderBy(this.props.users ,'score', 'desc');
-    console.log(users);
     const scores = users.map((user) => {
-      if((value === 'both' || user.office === value) && user.email !== 'admin@veriests.com') {
-        console.log('test');
+      if((this.state.value === 'all offices' || user.office === this.state.value) && user.email !== 'admin@veriests.com') {
         return(
           <div className="user" key={user._id}>
-            <Link to={`/index/${user.email}`}> {user.email}</Link>
+            <Link to={`/index/${user.email}`}> {user.email.split("@veriests.com")}</Link>
             <div>{user.score}</div>
           </div>
         )
       }
       else{return <div />}
   });
-
-  this.setState({scores})
+  this.setState({scores});
   }
 
   render(){
     if(!this.props.users){return(<div>...loading</div>);}
+    if(!this.state.scores){return(<div><div>...loading</div>{this.change()}</div>);}
     return (
       <div>
         <header>
@@ -52,13 +43,14 @@ class Scores extends Component {
         <div className="scores">
           <div className="scoresTitle">
             <h4>scores</h4>
-            <select onChange={(e) => this.change(e.target.value)}>
-              <option value='both'>All Offices</option>
-              <option value='israel'>Israel</option>
-              <option value='serbia'>Serbia</option>
+            <select onChange={(e) => this.setState({scores: false, value: e.target.value})}>
+              <option vlaue='' disabled selected hidden>{this.state.value}</option>
+              <option value='all offices'>all offices</option>
+              <option value='israel'>israel</option>
+              <option value='serbia'>serbia</option>
             </select>
            </div>
-           <div className="usersScores">{this.state.scores ? this.state.scores : this.change('both') }</div>
+           <div className="usersScores">{this.state.scores}</div>
         </div>
       </div>
     );
@@ -72,9 +64,6 @@ function mapStateToProps(state){
   };
 }
 
-function mapDispatchToProps(dispatch){
-  return bindActionCreators({fetchUsers}, dispatch);
-}
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(Scores);
+export default connect(mapStateToProps)(Scores);

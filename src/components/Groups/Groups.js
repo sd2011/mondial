@@ -29,13 +29,28 @@ class Groups extends Component{
   }
 
   shouldComponentUpdate(nextProps, nextState){
-    if (this.props.user.email !== this.props.email || !this.props.update){
-      if(!this.state.update){
+    if (nextProps.user.email !== nextProps.email || !nextProps.update){
+      if(!nextState.update){
         return false;
       }
     }
     return true;
   }
+  componentDidUpdate(){
+    this.props.clear === "all" && this.setState(
+      {groups: {
+      "Group A": {"Russia": "", "Saudi Arabia": "", "Egypt": "", "Uruguay": ""},
+      "Group B": {"Portogal": "", "Spain": "", "Morocco": "", "IR Iran": ""},
+      "Group C": {"France": "", "Australia": "", "Peru": "", "Denmark": ""},
+      "Group D": {"Argentina": "", "Iceland": "", "Croatia": "", "Nigeria": ""},
+      "Group E": {"Brazil": "", "Swizerland": "", "Costa Rica": "", "Serbia": ""},
+      "Group F": {"Germany": "", "Mexico": "", "Sweden": "", "Korea Republic": ""},
+      "Group G": {"Belgium": "", "Panama": "", "Tunisia": "", "England": ""},
+      "Group H": {"Poland": "", "Senegal": "", "Colombia": "", "Japan": ""}
+    }
+  });
+
+}
 
 
 handler(groups) {this.setState({
@@ -56,7 +71,8 @@ handler(groups) {this.setState({
       if((count[1] === 1 && count[2] === 1) || this.props.email === 'admin@veriests.com' ){groupsWinners[group] = teamsWinners;}
       });
     if(Object.keys(groupsWinners).length === 8 || this.props.email === 'admin@veriests.com' ){
-      return(this.props.insertGroupsWinners({groupsWinners, 'email': this.props.user['email']}));
+      this.props.insertGroupsWinners({groupsWinners, 'email': this.props.user['email']});
+      return(this.setState({error:""}));
   }
     else {
       return(this.error());
@@ -64,7 +80,7 @@ handler(groups) {this.setState({
   }
 
   error(){
-this.setState({error:'please choose only one first place and one second place for each group!'});
+this.setState({error:'please choose only one team for the first place and one for the second place for each group!'});
 }
 
 update(){
@@ -96,7 +112,7 @@ update(){
         </div>
         <div>
           <div>
-            {this.props.update ? (<button onClick={() => this.check()}>submit groups</button>) : this.update()}
+            {this.props.update ? ( <button onClick={() => this.check()}>submit groups</button>): this.update()}
           </div>
           <div className="error">{this.state.error}</div>
         </div>
