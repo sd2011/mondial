@@ -2,7 +2,7 @@ import React, { Component} from 'react';
 import { reduxForm, Field } from  'redux-form';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { fetchCurrentUser, fetchUsers } from '../actions/index';
+import { fetchCurrentUser } from '../actions/index';
 import './css/enter.css';
 
 class Sign extends Component {
@@ -13,9 +13,6 @@ class Sign extends Component {
     {value: 'israel'};
   }
 
-  componentDidMount(){
-    this.props.fetchUsers();
-  }
 
   componentDidUpdate(prevProps, prevState){
     if(this.props.email){
@@ -79,7 +76,7 @@ onSubmit(values){
                     <option value="serbia">Serbia</option>
                   </select>
             </div>
-            {this.props.email && this.state.clicked && (<div>email or password do not match!</div>)}
+            {this.props.email && this.props.email === "lies" && this.state.clicked && (<div className="error">email or password do not match!</div>)}
             <button type="submit" >enter</button>
           </form>
         </div>
@@ -111,7 +108,7 @@ function mapStateToProps(state){
 }
 
 function mapDispatchToProps(dispatch){
-  return bindActionCreators({fetchCurrentUser, fetchUsers}, dispatch);
+  return bindActionCreators({fetchCurrentUser}, dispatch);
 }
 
 export default reduxForm({

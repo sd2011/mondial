@@ -4,6 +4,7 @@ import user from './user';
 import users from './users';
 import currentUser from './currentUser';
 import end from './end';
+import flags from './flags';
 
 
 const rootReducers = combineReducers({
@@ -11,6 +12,7 @@ const rootReducers = combineReducers({
   users,
   currentUser,
   end,
+  flags,
   form: formReducer
 });
 

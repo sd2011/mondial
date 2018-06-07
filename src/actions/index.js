@@ -10,7 +10,7 @@ export const END = "end";
 
  const server = async (addres, values) => {
   const request = await axios
-  .post('https://veriests-world-cup.herokuapp.com/' + addres , values && values)
+  .post('https://veriest-world-cup.herokuapp.com/' + addres , values && values)
   .then(res => res.data);
 
     return request;
@@ -48,10 +48,8 @@ export const insertWinners = (values) => {
     payload: request
   };
 }
-export const fetchUsers = async () => {
-  const request = await axios
-  .get('https://veriests-world-cup.herokuapp.com/')
-  .then(res => res.data);
+export const fetchUsers =  (values) => {
+  const request = server('users', values)
 
   return{
     type: FETCH_USERS,
@@ -60,7 +58,7 @@ export const fetchUsers = async () => {
 }
 export const fetchEnd = async () => {
   const request = await axios
-  .get('https://veriests-world-cup.herokuapp.com/')
+  .get('https://veriest-world-cup.herokuapp.com/end')
   .then(res => res.data);
 
   return{

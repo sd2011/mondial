@@ -6,6 +6,7 @@ import Matches from "../components/matches/Matches";
 import Groups from "../components/Groups/Groups";
 import Nav from "../components/Nav/Nav";
 import { fetchUser, insertWinners, fetchEnd, insertEnd } from "../actions/index";
+import './css/container.css';
 
 class Index extends Component{
   constructor() {
@@ -41,7 +42,7 @@ class Index extends Component{
     if(!top3 && this.state.top3 !== ""){return this.setState({top3: "", winners: {},color: {} });}
     if(this.props.currentUser.email === 'admin@veriests.com' && this.state.admin ){
       this.props.insertWinners({top3,winners,color,'email': this.props.user['email']});
-      return this.setState({admin: false, submited: "betting has been submitted"});
+      return this.setState({admin: false, submited: "predictions has been submitted"});
     }
     const teams = _.filter(top3, (team) => {
       if(team !== "?"){ if((color[4][64][team] && color[4][64][team]  !== "") || (color[4][63][team] && color[4][63][team] !== "")){return(true);}}
@@ -58,9 +59,9 @@ class Index extends Component{
     if(top3 && Object.keys(top3).length === 3) {
       console.log(top3);
       this.props.insertWinners({top3,winners,color,'email': this.props.user['email']});
-      this.setState({submited: "betting has been submitted"});
+      this.setState({submited: "predictions has been submitted"});
     }
-    else{this.setState({submited: "plase make sure you have completed your betting" });}
+    else{this.setState({submited: "plase make sure you have completed your predictions" });}
   }
 
   render(){
@@ -75,9 +76,9 @@ class Index extends Component{
         <Groups update={this.state.update} clear={this.state.clear}  />
         <Matches update={this.state.update} check={this.check} admin={this.state.admin} clear={this.state.clear} />
         {this.state.update &&  (
-          <div>
+          <div className="buttons">
             <button onClick={() => this.handleSubmit() }>
-              submit betting
+              submit predictions
             </button>
             <button onClick={() => this.setState({clear: "all"})}>
               clear all

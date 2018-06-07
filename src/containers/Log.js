@@ -54,7 +54,7 @@ onSubmit(values){
             type="password"
             component={this.renderComponent}
             />
-            {this.props.email && this.state.clicked && (<div>email or password do not match!</div>)}
+            {this.props.email && this.props.email === "lies" && this.state.clicked && (<div className= "error">email or password do not match!</div>)}
             <button type="submit" >enter</button>
           </form>
         </div>
@@ -69,7 +69,7 @@ function validate(values){
     errors.logEmail = "please enter a vaild email !";
   }
   if(!values.logPassword){
-    errors.logPassword = "plase insert password and confirm it";
+    errors.logPassword = "plase insert password";
   }
   return errors;
 }

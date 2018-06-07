@@ -8,7 +8,7 @@ const Nav = props => {
   return(
     <div className="nav">
       <Link to={"/index/scores"}>Scores</Link>
-      <Link to={`/index/${email}`}>My Betting</Link>
+      <Link to={`/index/${email}`}>My Predictions</Link>
     </div>
   );
 }

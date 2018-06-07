@@ -17,6 +17,14 @@ class Matches extends Component {
         6: {},
         7: {}
       },
+      phase: {
+        1: "1st Round",
+        7: "1st Round",
+        2: "Quarter Finals",
+        6: "Quarter Finals",
+        3: "Semi Finals",
+        5: "Semi Finals"
+      },
       top3:{},
       ok: true,
       check: false
@@ -220,12 +228,19 @@ class Matches extends Component {
 
 
   renderMatches(column,i){
+      const last = i === '4' ? 'last' : '';
+      console.log(last);
       const columns = _.map(column, (teams, number) =>
     <div key={number.toString()} id={"match"+number.toString()}>
     {this.renderMatch(teams, number, Object.keys(column).indexOf(number), i)}
     </div>
   );
-      return(<div className="column">{columns}</div>);
+      return(
+        <div className="bla">
+          <div>{ i !== 4 && this.state.phase[i]}</div>
+          <div className={"column " + last}>{columns}</div>
+        </div>
+      );
   }
 
 
@@ -236,7 +251,7 @@ class Matches extends Component {
     return (
         <Match
          number={number}
-         date="date"
+         date={this.props.date}
          teamA={teams[0]}
          teamB={teams[1]}
          index={index}
@@ -269,6 +284,7 @@ function mapStateToProps(state){
     color: state.user.color,
     email: state.user.email,
     top3: state.user.top3,
+    date: state.flags.date,
     currentUser: state.currentUser
   }
 }
